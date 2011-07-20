@@ -20,3 +20,8 @@ TODO explain how to configure it. Example:
       config.hosts.find_config_via_key_paths = true
       config.hosts.names = ["config.foo.bar", "config.foo.baz"]
     end
+
+## Caveats
+
+- Only supports single machine setups for now
+- Cannot yet do indirect hostname getting, i.e. you will have to configure the hostname twice, once in the machine and another time in the vagrant file.

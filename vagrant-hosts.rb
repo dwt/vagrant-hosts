@@ -38,16 +38,14 @@ module VagrantHosts
     configures :hosts
     attr_accessor :names
     
+    def hostnames()
+      self.names || []
+    end
+    
     def validate(errors)
       return if names.nil?
       
-      each_is_string = lambda do |an_array|
-        an_array.inject(true) do |memo, each|
-          memo and each.is_a? String
-        end
-      end
-      
-      return if names.is_a? Array and each_is_string.call(names)
+      return if names.is_a? Array and names.all? { |each| each.is_a? String }
       
       errors.add(":names needs to be set to an array of strings")
     end
@@ -56,28 +54,60 @@ module VagrantHosts
   class HostsManagingMiddleware
     def initialize(app, env)
       @app = app
-      @env = env
     end
     
+    
     def hosts()
-      puts @env.inspect
-      @env.config.hosts.names
+      @env.env.config.hosts.hostnames
+    end
+    
+    def ip()
+      # is this really the right way to do it?
+      @env.env.config.vm.network_options[1][:ip]
+    end
+    
+    def managers
+      hosts.map { |each| HostManager.new each, ip }
+    end
+    
+    def call(env)
+      @env = env
+      @app.call(env)
     end
     
   end
   
   class HostsSetupMiddleware < HostsManagingMiddleware
     def call(env)
-      
+      super
+      if not hosts.empty?
+        env.ui.info "Setting up hostnames"
+        managers.each { |each| each.add_host_entry }
+      end
+      @app.call(env)
     end
   end
   
   class HostsTeardownMiddleware < HostsManagingMiddleware
     def call(env)
-      
+      super
+      if not hosts.empty?
+        env.ui.info "Tearind down hostnames"
+        managers.each { |each| each.remove_host_entry }
+      end
+      @app.call(env)
     end
   end
 end
+
+# TODO: find out if this needs to be in more chains
+[:start, :up, :reload, :resume].each do |each|
+  Vagrant::Action[each].use VagrantHosts::HostsSetupMiddleware
+end
+[:destroy, :suspend].each do |each|
+  Vagrant::Action[each].use VagrantHosts::HostsTeardownMiddleware
+end
+
 
 require "rspec"
 describe VagrantHosts do
@@ -144,7 +174,7 @@ describe VagrantHosts do
     end
     
     it "should allow array of names" do
-      @config.names = ['foo.bar', 'bar.baz']
+      @config.names = ['example.net', 'example.com']
       
       @config.validate(@errors)
       @errors.errors.should be_empty
@@ -171,6 +201,10 @@ describe VagrantHosts do
       @errors.errors.should_not be_empty, "#{@errors.inspect}"
     end
     
+    it "should always return valid array from hostnames" do
+      @config.hostnames.should == []
+    end
+    
   #  it "should allow indirection to json" # TODO: decide: special config for that?
   end
   
@@ -181,11 +215,25 @@ describe VagrantHosts do
       @klass = VagrantHosts::HostsManagingMiddleware
       @app, @env = action_env
       @ware = @klass.new(@app, @env)
-      vagrant_env.config.hosts.names = ["host.name"]
+      @env.env.config.hosts.names = ["host.name"]
+      @env.env.config.vm.network "10.10.10.10"
+      @ware.call(@env)
     end
     
     it "should know the hosts to create" do
       @ware.hosts.should == ["host.name"]
+    end
+    
+    it "should know the IP to work with" do
+      @ware.ip.should == "10.10.10.10"
+    end
+    
+    it "should have a host manager ready to be called for each host" do
+      @ware.managers.should be_a Array
+      @ware.managers.all? do |all|
+        all.should be_a VagrantHosts::HostManager
+        @ware.hosts.should be_include all.hostname
+      end
     end
   end
   
