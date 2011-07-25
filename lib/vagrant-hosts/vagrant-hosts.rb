@@ -92,7 +92,7 @@ module VagrantHosts
     def call(env)
       super
       if not hosts.empty?
-        env.ui.info "Tearind down hostnames"
+        env.ui.info "Tearing down hostnames"
         managers.each { |each| each.remove_host_entry }
       end
       @app.call(env)
