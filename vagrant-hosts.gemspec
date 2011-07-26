@@ -15,10 +15,10 @@ Gem::Specification.new do |s|
   # TODO: Missing?
   # s.rubyforge_project         = "vagrant-hosts"
 
-  s.add_dependency "vagrant", "~> 0.6.0"
+  s.add_dependency "virtualbox", "~> 0.9.1"
+  s.add_dependency "vagrant", "~> 0.8.2"
   s.add_development_dependency "rspec", "~> 2.6.0"
-  # later?
-  # s.add_development_dependency "bundler", ">= 1.0.0"
+  s.add_development_dependency "bundler", ">= 1.0.0"
 
   s.files        = `git ls-files`.split("\n")
   # s.test_files   = TODO
