@@ -9,4 +9,5 @@ gem "vagrant-hosts", :path => "."
 
 group :test do
   gem "rspec", "~> 2.6.0"
+  gem "rake"
 end
