@@ -14,11 +14,6 @@ TODO explain how to configure it. Example:
 
     Vagrant::Config.run do |config|
       config.hosts.names = ["host.name", "another.name"]
-      
-      # alternatively find them indirectly by looking them up in the configuration
-      # most usefull if you want to specify the configuration only once in the json
-      config.hosts.find_config_via_key_paths = true
-      config.hosts.names = ["config.foo.bar", "config.foo.baz"]
     end
 
 ## Caveats
