@@ -1,4 +1,4 @@
-require 'vagrant-hosts/vagrant-hosts'
+require 'vagrant-hosts/plugin'
 
 # TODO: find out if this needs to be in more chains
 [:start, :up, :reload, :resume].each do |each|
