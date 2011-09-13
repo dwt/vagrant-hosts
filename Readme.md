@@ -18,5 +18,6 @@ TODO explain how to configure it. Example:
 
 ## Caveats
 
+- Only works on Mac OS X (pre Lion) <- patches welcome!
 - Only supports single machine setups for now
 - Cannot yet do indirect hostname getting, i.e. you will have to configure the hostname twice, once in the machine and another time in the vagrant file.
