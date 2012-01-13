@@ -5,13 +5,13 @@ describe VagrantHosts do
   
   before(:each) do
     # don't want accidental executions
-    VagrantHosts::HostManager.any_instance.stub(:shell)
+    VagrantHosts::DSCLHostManager.any_instance.stub(:shell)
   end
   
-  describe VagrantHosts::HostManager do
+  describe VagrantHosts::DSCLHostManager do
     
     before(:each) do
-      @manager = VagrantHosts::HostManager.new("host.name", "192.168.1.2")
+      @manager = VagrantHosts::DSCLHostManager.new("host.name", "192.168.1.2")
     end
     
     describe "setup" do
@@ -139,7 +139,7 @@ describe VagrantHosts do
     it "should have a host manager ready to be called for each host" do
       @ware.managers.should be_a Array
       @ware.managers.all? do |all|
-        all.should be_a VagrantHosts::HostManager
+        all.should be_a VagrantHosts::DSCLHostManager
         @ware.hosts.should be_include all.hostname
       end
     end

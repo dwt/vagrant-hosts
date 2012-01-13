@@ -16,7 +16,21 @@ module VagrantHosts
       self.hostname = hostname
       self.ip = ip
     end
+    
+    def add_host_entry
+      raise NotImplementedError
+    end
+    
+    def remove_host_entry
+      raise NotImplementedError
+    end
+    
+  end
   
+  class DSCLHostManager < HostManager
+    
+    # Doesn't work on 10.7, 10.7.1 and 10.7.2 due to apple botching the cscl utility
+    
     def shell(code)
       `#{code}`
     end
@@ -74,7 +88,7 @@ module VagrantHosts
     end
     
     def managers
-      hosts.map { |each| HostManager.new each, ip }
+      hosts.map { |each| DSCLHostManager.new each, ip }
     end
     
     def call(env)
