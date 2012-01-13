@@ -36,18 +36,25 @@ module VagrantHosts
   
   class HostsConfig < Vagrant::Config::Base
     configures :hosts
-    attr_accessor :names
+    attr_accessor :names#, :names_from_chef_json
     
     def hostnames()
       self.names || []
     end
     
     def validate(errors)
-      return if names.nil?
-      
-      return if names.is_a? Array and names.all? { |each| each.is_a? String }
-      
-      errors.add(":names needs to be set to an array of strings")
+      check_valid_names(errors, names, ":names needs to be set to an array of strings")
+#      check_valid_names(errors, names_from_chef_json, ":names_from_chef_json needs to be set to an array of strings")
+    end
+    
+    def check_valid_names(errors, an_array, an_error_message)
+      return if valid_names_array?(an_array) 
+      errors.add(an_error_message)
+    end
+    
+    def valid_names_array?(an_array)
+      return true if an_array.nil?
+      an_array.is_a? Array and an_array.all? { |each| each.is_a? String }
     end
   end
   

@@ -1,6 +1,7 @@
 require 'vagrant-hosts'
 
 describe VagrantHosts do
+  include Vagrant::TestHelpers
   
   before(:each) do
     # don't want accidental executions
@@ -46,8 +47,6 @@ describe VagrantHosts do
   
   describe VagrantHosts::HostsConfig do
     
-    include Vagrant::TestHelpers
-    
     before(:each) do
       @env = vagrant_env
       @config = VagrantHosts::HostsConfig.new
@@ -79,14 +78,12 @@ describe VagrantHosts do
     
     it "should error on non array for hostnames" do
       @config.names = 23
-      
       @config.validate(@errors)
       @errors.errors.should_not be_empty
     end
     
     it "should error on hostnames that are not strings" do
       @config.names = [23]
-      
       @config.validate(@errors)
       @errors.errors.should_not be_empty, "#{@errors.inspect}"
     end
@@ -95,11 +92,32 @@ describe VagrantHosts do
       @config.hostnames.should == []
     end
     
+    xit "should error on non array of json_hostnames" do
+      @config.names_from_chef_json = 23
+      @config.validate(@errors)
+      @errors.errors.should_not be_empty
+    end
+    
+    xit "should error non strings in json_hostnames" do
+      @config.names_from_chef_json = [23]
+      @config.validate(@errors)
+      @errors.errors.should_not be_empty
+    end
+    
+    xit "should be able to get hosts from config json when using :chef_solo" do
+      @env.config.vm.provision :chef_solo do |chef|
+        chef.json.merge!(:foo => "bar")
+      end
+      @config.names_from_chef_json = ["foo"]
+      @config.hostnames.should == ["bar"]
+    end
+    
+    
+    # TODO: validation
   #  it "should allow indirection to json" # TODO: decide: special config for that?
   end
   
   describe VagrantHosts::HostsManagingMiddleware do
-    include Vagrant::TestHelpers
     
     before(:each) do
       @klass = VagrantHosts::HostsManagingMiddleware
