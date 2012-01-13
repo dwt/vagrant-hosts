@@ -91,30 +91,27 @@ describe VagrantHosts do
     it "should always return valid array from hostnames" do
       @config.hostnames.should == []
     end
-    
-    xit "should error on non array of json_hostnames" do
-      @config.names_from_chef_json = 23
-      @config.validate(@errors)
-      @errors.errors.should_not be_empty
-    end
-    
-    xit "should error non strings in json_hostnames" do
-      @config.names_from_chef_json = [23]
-      @config.validate(@errors)
-      @errors.errors.should_not be_empty
-    end
-    
-    xit "should be able to get hosts from config json when using :chef_solo" do
-      @env.config.vm.provision :chef_solo do |chef|
-        chef.json.merge!(:foo => "bar")
-      end
-      @config.names_from_chef_json = ["foo"]
-      @config.hostnames.should == ["bar"]
-    end
-    
-    
-    # TODO: validation
-  #  it "should allow indirection to json" # TODO: decide: special config for that?
+
+    # TODO: enable vagrant to get these hostnames from chef and puppet configs
+    # xit "should error on non array of json_hostnames" do
+    #   @config.names_from_chef_json = 23
+    #   @config.validate(@errors)
+    #   @errors.errors.should_not be_empty
+    # end
+    # 
+    # xit "should error non strings in json_hostnames" do
+    #   @config.names_from_chef_json = [23]
+    #   @config.validate(@errors)
+    #   @errors.errors.should_not be_empty
+    # end
+    # 
+    # xit "should be able to get hosts from config json when using :chef_solo" do
+    #   @env.config.vm.provision :chef_solo do |chef|
+    #     chef.json.merge!(:foo => "bar")
+    #   end
+    #   @config.names_from_chef_json = ["foo"]
+    #   @config.hostnames.should == ["bar"]
+    # end
   end
   
   describe VagrantHosts::HostsManagingMiddleware do
