@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "virtualbox", "~> 0.9.1"
   s.add_dependency "vagrant", "~> 0.8.2"
+  s.add_dependency "ruby-augeas", "~> 0.4.1"
   s.add_development_dependency "rspec", "~> 2.6.0"
   s.add_development_dependency "bundler", ">= 1.0.0"
 
