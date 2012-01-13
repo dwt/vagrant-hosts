@@ -8,7 +8,8 @@
 require 'vagrant'
 
 module VagrantHosts
-  class HostManager
+  
+  class HostEditor
   
     attr_accessor :hostname, :ip
   
@@ -27,7 +28,7 @@ module VagrantHosts
     
   end
   
-  class DSCLHostManager < HostManager
+  class DSCLHostEditor < HostEditor
     
     # Doesn't work on 10.7, 10.7.1 and 10.7.2 due to apple botching the cscl utility
     
@@ -88,7 +89,7 @@ module VagrantHosts
     end
     
     def managers
-      hosts.map { |each| DSCLHostManager.new each, ip }
+      hosts.map { |each| DSCLHostEditor.new each, ip }
     end
     
     def call(env)
