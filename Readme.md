@@ -1,3 +1,7 @@
+# Searching for maintainers
+
+I do not use vagrant anymore, and thus this is unmaintained since quite a long time. If you care about this feature, please talk to me if you would like to maintain it.
+
 # vagrant-hosts
 
 `vagrant-hosts` is a plugin for [Vagrant](http://vagrantup.com) which allows a developer to automatically add or remove local hosts entries when bringing up or shutting down machines with vagrant.
